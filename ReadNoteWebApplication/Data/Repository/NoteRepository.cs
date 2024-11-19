@@ -20,7 +20,7 @@ namespace ReadNoteWebApplication.Data.Repository
         [StackTraceHidden]
         public async Task<Note?> GetByIdAsync(int id,CancellationToken cancellationToken = default)
         {
-            return await context.Notes.FirstOrDefaultAsync(x => x.Id == id);
+            return await context.Notes.FirstOrDefaultAsync(n => n.Id == id);
         }
 
         [StackTraceHidden]
@@ -48,6 +48,5 @@ namespace ReadNoteWebApplication.Data.Repository
         {
            return await context.Notes.Where(n => n.Title.Contains(title)).ToListAsync();
         }
-
     }
 }

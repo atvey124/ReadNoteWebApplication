@@ -12,5 +12,7 @@ namespace ReadNoteWebApplication.Data.Interfaces
         Task DeleteAsync(int id, CancellationToken cancellationToken = default);
         Task<List<Note>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<List<Note>> GetAllByTitleAsync(string title,CancellationToken cancellationToken = default);
+        Task PutLikeNoteById(int id, CancellationToken cancellationToken = default);
+        Task PutDislikeNoteById(int id, CancellationToken cancellationToken = default);
     }
 }

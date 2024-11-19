@@ -79,5 +79,29 @@ namespace ReadNoteWebApplication.Data.Repository
             return listNote;
 
         }
+
+        [StackTraceHidden]
+        public async Task PutLikeNoteById(int id, CancellationToken cancellationToken = default)
+        {
+            Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
+            if (note == null)
+                throw new Exception("note not found");
+            else
+                note.Like++;
+
+            await noteRepository.UpdateAsync(note,cancellationToken);
+        }
+
+        [StackTraceHidden]
+        public async Task PutDislikeNoteById(int id, CancellationToken cancellationToken = default)
+        {
+            Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
+            if (note == null)
+                throw new Exception("note not found");
+            else
+                note.Dislike++;
+
+            await noteRepository.UpdateAsync(note, cancellationToken);
+        }
     }
 }

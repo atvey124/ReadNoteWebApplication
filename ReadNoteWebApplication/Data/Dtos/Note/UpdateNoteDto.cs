@@ -4,6 +4,10 @@ namespace ReadNoteWebApplication.Data.Dtos.Note
 {
     public class UpdateNoteDto
     {
+        public int Like { get; set; }
+
+        public int Dislike { get; set; }
+
         [Required]
         [MinLength(20, ErrorMessage = "Note text must contain 20 symbols minimum")]
         [MaxLength(300, ErrorMessage = "Note text must contain 300 symbols maximum")]

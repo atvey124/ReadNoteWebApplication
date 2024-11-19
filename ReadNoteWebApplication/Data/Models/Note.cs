@@ -8,6 +8,10 @@ namespace ReadNoteWebApplication.Data.Models
     {
         public int Id { get; set; }
 
+        public int Like { get; set; }
+
+        public int Dislike { get; set; }
+
         public string Text { get; set; } = string.Empty;
 
         public string Title { get; set; } = string.Empty;

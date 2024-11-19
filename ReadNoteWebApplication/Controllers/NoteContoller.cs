@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReadNoteWebApplication.Data.Helpers;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
+using ReadNoteWebApplication.Data.Repository;
 using System.Diagnostics;
 
 namespace ReadNoteWebApplication.Controllers
@@ -12,6 +13,7 @@ namespace ReadNoteWebApplication.Controllers
     [Route("Note")]
     public class NoteContoller(INoteService noteService) : ControllerBase
     {
+        //FIX ROUTING
         [StackTraceHidden]
         [HttpPost]
         public async Task<IActionResult> CreatAsync(string text,string title)
@@ -70,6 +72,26 @@ namespace ReadNoteWebApplication.Controllers
             List<Note> listNote = await noteService.GetAllByTitleAsync(title);
 
             return Ok(listNote);
+        }
+
+        //FIX ROUTING
+        [StackTraceHidden]
+        [HttpPut]
+        public async Task<IActionResult> PutLikeNoteById(int id, CancellationToken cancellationToken = default)
+        {
+            await noteService.PutLikeNoteById(id, cancellationToken);
+
+            return NoContent();
+        }
+
+        //FIX ROUTING
+        [StackTraceHidden]
+        [HttpPut("/")]
+        public async Task<IActionResult> PutDislikeNoteById(int id, CancellationToken cancellationToken = default)
+        {
+            await noteService.PutDislikeNoteById(id, cancellationToken);
+
+            return NoContent();
         }
     }
 }
