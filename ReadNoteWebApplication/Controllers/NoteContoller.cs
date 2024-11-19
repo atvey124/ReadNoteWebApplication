@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ReadNoteWebApplication.Data.Helpers;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
 using System.Diagnostics;
@@ -13,12 +14,12 @@ namespace ReadNoteWebApplication.Controllers
     {
         [StackTraceHidden]
         [HttpPost]
-        public async Task<IActionResult> CreatAsync(string text)
+        public async Task<IActionResult> CreatAsync(string text,string title)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await noteService.CreatAsync(text);
+            await noteService.CreatAsync(text,title);;
             return NoContent();
         }
 
@@ -33,12 +34,12 @@ namespace ReadNoteWebApplication.Controllers
 
         [StackTraceHidden]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] int id,string newText)
+        public async Task<IActionResult> UpdateAsync([FromRoute] int id,string newText,string newTitle)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await noteService.UpdateAsync(id,newText);
+            await noteService.UpdateAsync(id,newText,newTitle);
             return NoContent();
         }
 
@@ -49,6 +50,26 @@ namespace ReadNoteWebApplication.Controllers
             await noteService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        //FIX ROUTING
+        [StackTraceHidden]
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            List<Note> listNote = await noteService.GetAllAsync();
+
+            return Ok(listNote);
+        }
+
+        //FIX ROUTING
+        [StackTraceHidden]
+        [HttpGet("{title}")]
+        public async Task<IActionResult> GetAllByTitleAsync(string title)
+        {
+            List<Note> listNote = await noteService.GetAllByTitleAsync(title);
+
+            return Ok(listNote);
         }
     }
 }

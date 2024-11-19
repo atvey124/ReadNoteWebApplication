@@ -9,6 +9,8 @@ namespace ReadNoteWebApplication.Data.Dtos.Note
         [MaxLength(300, ErrorMessage = "Note text must contain 300 symbols maximum")]
         public string Text { get; set; } = string.Empty;
 
+        public string Title { get; set; } = string.Empty;
+
         public int Id { get; set; }
 
         public DateTime Created { get; set; } = DateTime.Now;
