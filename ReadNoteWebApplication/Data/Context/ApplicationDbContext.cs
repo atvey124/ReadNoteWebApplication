@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace ReadNoteWebApplication.Data.Context
 {
-    [StackTraceHidden]
+    
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -12,6 +12,7 @@ namespace ReadNoteWebApplication.Data.Context
 
         public DbSet<Note> Notes { get; set; }
 
+        [StackTraceHidden]
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Note>().HasKey(x => x.Id);

@@ -6,18 +6,23 @@ using System.Diagnostics;
 
 namespace ReadNoteWebApplication.Controllers
 {
-    [StackTraceHidden]
+    
     [ApiController]
     [Route("Note")]
     public class NoteContoller(INoteService noteService) : ControllerBase
     {
+        [StackTraceHidden]
         [HttpPost]
         public async Task<IActionResult> CreatAsync(string text)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             await noteService.CreatAsync(text);
             return NoContent();
         }
 
+        [StackTraceHidden]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
@@ -26,14 +31,18 @@ namespace ReadNoteWebApplication.Controllers
             return Ok(result);
         }
 
+        [StackTraceHidden]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateAsync([FromRoute] int id,string newText)
         {
-            await noteService.UpdateAsync(id,newText);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            await noteService.UpdateAsync(id,newText);
             return NoContent();
         }
 
+        [StackTraceHidden]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
