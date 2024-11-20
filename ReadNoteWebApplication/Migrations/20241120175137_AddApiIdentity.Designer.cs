@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadNoteWebApplication.Data.Context;
 
@@ -10,9 +11,11 @@ using ReadNoteWebApplication.Data.Context;
 namespace ReadNoteWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120175137_AddApiIdentity")]
+    partial class AddApiIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,13 +50,13 @@ namespace ReadNoteWebApplication.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "263d8b58-2879-42e2-83fb-94bad3497aeb",
+                            Id = "ab3bda81-f6a6-4e81-9757-95274399603f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1af9c1b9-b680-44c2-b08b-768e23a061ad",
+                            Id = "7187f9b8-7d4f-4a87-8573-54763e8e6e26",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -206,6 +209,7 @@ namespace ReadNoteWebApplication.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
@@ -226,6 +230,10 @@ namespace ReadNoteWebApplication.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
@@ -244,6 +252,10 @@ namespace ReadNoteWebApplication.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

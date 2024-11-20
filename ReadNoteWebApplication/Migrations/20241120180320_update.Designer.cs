@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadNoteWebApplication.Data.Context;
 
@@ -10,9 +11,11 @@ using ReadNoteWebApplication.Data.Context;
 namespace ReadNoteWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120180320_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,13 +50,13 @@ namespace ReadNoteWebApplication.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "263d8b58-2879-42e2-83fb-94bad3497aeb",
+                            Id = "4012f654-fbde-440b-a967-e2899cec4f49",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1af9c1b9-b680-44c2-b08b-768e23a061ad",
+                            Id = "41bd38cc-0568-401c-b9d8-078257cd6840",
                             Name = "User",
                             NormalizedName = "USER"
                         });
