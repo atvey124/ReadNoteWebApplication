@@ -1,6 +1,9 @@
-﻿namespace ReadNoteWebApplication.Data.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace ReadNoteWebApplication.Data.Models
 {
-    public class User
+    public class User : IdentityUser
     {
+
     }
 }

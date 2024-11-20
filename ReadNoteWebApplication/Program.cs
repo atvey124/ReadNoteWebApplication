@@ -23,6 +23,8 @@ namespace ReadNoteWebApplication
             app.MapControllers();
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.Run();
             
         }
