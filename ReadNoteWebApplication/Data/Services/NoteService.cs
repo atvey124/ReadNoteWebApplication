@@ -62,30 +62,35 @@ namespace ReadNoteWebApplication.Data.Repository
         [StackTraceHidden]
         public async Task<List<Note>> GetAllAsync(CancellationToken cancellationToken = default)
         {
+            QueryObject query = new QueryObject();
+
             List<Note> listNote = await noteRepository.GetAllAsync(cancellationToken);
             if (listNote.Count <= 0)
                 throw new Exception("Notes not found");
 
-            return listNote;
+            int skipNumber = (query.currentPageNumber - 1) * query.PageSize;
+            return (listNote.Skip(skipNumber)).Take(query.PageSize).ToList();
         }
 
         [StackTraceHidden]
         public async Task<List<Note>> GetAllByTitleAsync(string title,CancellationToken cancellationToken = default)
         {
+            QueryObject query = new QueryObject();
+
             List<Note> listNote = await noteRepository.GetAllByTitleAsync(title,cancellationToken);
             if (listNote.Count <= 0)
                 throw new Exception("Notes not found");
 
-            return listNote;
-
+            int skipNumber = (query.currentPageNumber - 1) * query.PageSize;
+            return (listNote.Skip(skipNumber)).Take(query.PageSize).ToList();
         }
 
         [StackTraceHidden]
-        public async Task PutLikeNoteById(int id, CancellationToken cancellationToken = default)
+        public async Task PutLikeNoteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
             if (note == null)
-                throw new Exception("note not found");
+                throw new Exception("Note not found");
             else
                 note.Like++;
 
@@ -93,11 +98,11 @@ namespace ReadNoteWebApplication.Data.Repository
         }
 
         [StackTraceHidden]
-        public async Task PutDislikeNoteById(int id, CancellationToken cancellationToken = default)
+        public async Task PutDislikeNoteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
             if (note == null)
-                throw new Exception("note not found");
+                throw new Exception("Note not found");
             else
                 note.Dislike++;
 

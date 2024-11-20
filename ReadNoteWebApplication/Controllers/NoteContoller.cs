@@ -77,9 +77,9 @@ namespace ReadNoteWebApplication.Controllers
         //FIX ROUTING
         [StackTraceHidden]
         [HttpPut]
-        public async Task<IActionResult> PutLikeNoteById(int id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PutLikeNoteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            await noteService.PutLikeNoteById(id, cancellationToken);
+            await noteService.PutLikeNoteByIdAsync(id, cancellationToken);
 
             return NoContent();
         }
@@ -87,9 +87,9 @@ namespace ReadNoteWebApplication.Controllers
         //FIX ROUTING
         [StackTraceHidden]
         [HttpPut("/")]
-        public async Task<IActionResult> PutDislikeNoteById(int id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PutDislikeNoteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            await noteService.PutDislikeNoteById(id, cancellationToken);
+            await noteService.PutDislikeNoteByIdAsync(id, cancellationToken);
 
             return NoContent();
         }
