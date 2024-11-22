@@ -1,6 +1,8 @@
-﻿using ReadNoteWebApplication.Data.Helpers;
+﻿using ReadNoteWebApplication.Data.Exceptions;
+using ReadNoteWebApplication.Data.Helpers;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
+using ReadNoteWebApplication.Data.Validations;
 using System.Diagnostics;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -12,14 +14,26 @@ namespace ReadNoteWebApplication.Data.Repository
         [StackTraceHidden]
         public async Task CreatAsync(string text, string title, CancellationToken cancellationToken = default)
         {
-            Note note = new Note()
-            {
-                Text = text,
-                Title = title,
-                Created = DateTime.UtcNow        
-            };
+            NoteValidation noteValidation = new NoteValidation();
+            (bool, string) noteValidationCreat = noteValidation.CreatValidation(text,title);
 
-            await noteRepository.CreatAsync(note, cancellationToken);
+            if (noteValidationCreat.Item1)
+            {
+                Note note = new Note()
+                {
+                    Text = text,
+                    Title = title,
+                    Created = DateTime.UtcNow
+                };
+
+                await noteRepository.CreatAsync(note, cancellationToken);
+            }
+            else
+            {
+                throw new NoteException(noteValidationCreat.Item2);
+            }
+
+
         }
 
 
@@ -30,11 +44,22 @@ namespace ReadNoteWebApplication.Data.Repository
             if (note == null)
                 throw new Exception("Note not found");
 
-            note.Text = newText;
-            note.Title = newTitle;
-            note.Updated = DateTime.UtcNow;
+            NoteValidation noteValidation = new NoteValidation();
+            (bool, string) noteValidationCreat = noteValidation.CreatValidation(newText, newTitle);
 
-            await noteRepository.UpdateAsync(note, cancellationToken);
+            if(noteValidationCreat.Item1)
+            {
+                note.Text = newText;
+                note.Title = newTitle;
+                note.Updated = DateTime.UtcNow;
+
+                await noteRepository.UpdateAsync(note, cancellationToken);
+            }
+            else
+            {
+                throw new NoteException(noteValidationCreat.Item2);
+            }
+
         }
 
 
@@ -43,7 +68,7 @@ namespace ReadNoteWebApplication.Data.Repository
         {
             Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
             if (note == null)
-                throw new Exception("Note not found");
+                throw new NoteException("Note not found");
 
             return note;
         }
@@ -54,7 +79,7 @@ namespace ReadNoteWebApplication.Data.Repository
         {
             Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
             if (note == null)
-                throw new Exception("Note not found");
+                throw new NoteException("Note not found");
 
             await noteRepository.DeleteAsync(note, cancellationToken);
         }
@@ -66,7 +91,7 @@ namespace ReadNoteWebApplication.Data.Repository
 
             List<Note> listNote = await noteRepository.GetAllAsync(cancellationToken);
             if (listNote.Count <= 0)
-                throw new Exception("Notes not found");
+                throw new NoteException("Notes not found");
 
             int skipNumber = (query.currentPageNumber - 1) * query.PageSize;
             return (listNote.Skip(skipNumber)).Take(query.PageSize).ToList();
@@ -79,7 +104,7 @@ namespace ReadNoteWebApplication.Data.Repository
 
             List<Note> listNote = await noteRepository.GetAllByTitleAsync(title,cancellationToken);
             if (listNote.Count <= 0)
-                throw new Exception("Notes not found");
+                throw new NoteException("Notes not found");
 
             int skipNumber = (query.currentPageNumber - 1) * query.PageSize;
             return (listNote.Skip(skipNumber)).Take(query.PageSize).ToList();
@@ -90,7 +115,7 @@ namespace ReadNoteWebApplication.Data.Repository
         {
             Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
             if (note == null)
-                throw new Exception("Note not found");
+                throw new NoteException("Note not found");
             else
                 note.Like++;
 
@@ -102,7 +127,7 @@ namespace ReadNoteWebApplication.Data.Repository
         {
             Note? note = await noteRepository.GetByIdAsync(id, cancellationToken);
             if (note == null)
-                throw new Exception("Note not found");
+                throw new NoteException("Note not found");
             else
                 note.Dislike++;
 

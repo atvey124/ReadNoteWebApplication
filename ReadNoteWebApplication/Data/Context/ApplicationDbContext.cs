@@ -7,36 +7,23 @@ using System.Diagnostics;
 namespace ReadNoteWebApplication.Data.Context
 {
     
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
 
         public DbSet<Note> Notes { get; set; }
+        public DbSet<User> Users { get; set; }
 
         [StackTraceHidden]
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Note>().HasKey(x => x.Id);
             modelBuilder.Entity<Note>().Property(x => x.Text).HasMaxLength(200);
+            modelBuilder.Entity<User>().Property(x => x.Username).HasMaxLength(200);
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
 
             base.OnModelCreating(modelBuilder);
-
-
-            List<IdentityRole> roles = new List<IdentityRole>
-            {
-                new IdentityRole
-                {
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole
-                {
-                    Name = "User",
-                    NormalizedName = "USER"
-                }
-            };
-            modelBuilder.Entity<IdentityRole>().HasData(roles);
         }
     }
 }
