@@ -23,6 +23,7 @@ namespace ReadNoteWebApplication.Data.Extensions
 
             serviceCollection.AddScoped<INoteRepository, NoteRepository>();
             serviceCollection.AddScoped<IUserRepository, UserRepository>();
+            serviceCollection.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
             serviceCollection.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -37,6 +38,8 @@ namespace ReadNoteWebApplication.Data.Extensions
         {
             serviceCollection.AddScoped<INoteService, NoteService>();
             serviceCollection.AddScoped<IUserService, UserService>();
+            serviceCollection.AddScoped<IPortfolioService, PortfolioService>();
+
             return serviceCollection;
         }
     }

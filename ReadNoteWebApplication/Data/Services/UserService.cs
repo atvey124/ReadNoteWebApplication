@@ -54,7 +54,7 @@ namespace ReadNoteWebApplication.Data.Services
         {
             User? user = await GetByUsernameAsync(username);
 
-            if(user?.Password == HashSHA128.HashSha128(password))
+            if (user?.Password == HashSHA128.HashSha128(password))
             {
                 return true;
             }
@@ -62,7 +62,6 @@ namespace ReadNoteWebApplication.Data.Services
             {
                 throw new UserException($"password is not correct");
             }
-
         }
 
     }
