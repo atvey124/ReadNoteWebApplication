@@ -9,6 +9,7 @@ using ReadNoteWebApplication.Data.Repository;
 using System.Diagnostics;
 using ReadNoteWebApplication.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpLogging;
 
 
 namespace ReadNoteWebApplication.Controllers
@@ -25,5 +26,26 @@ namespace ReadNoteWebApplication.Controllers
             
             return NoContent();
         }
+
+        //fix routing
+        [StackTraceHidden]
+        [HttpGet("username")]
+        public async Task<IActionResult> GetByUsernameAsync(string username)
+        {
+            User result = await userService.GetByUsernameAsync(username);
+
+            return Ok(result);
+        }
+
+        [StackTraceHidden]
+        [HttpPost("SignIn")]
+        public async Task<IActionResult> SignInAsync(string username,string password)
+        {
+            bool result = await userService.SignInAsync(username, password)!;
+
+            return Ok(result);
+        }
     }
+
+
 }

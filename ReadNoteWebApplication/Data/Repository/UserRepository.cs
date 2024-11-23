@@ -1,4 +1,5 @@
-﻿using ReadNoteWebApplication.Data.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using ReadNoteWebApplication.Data.Context;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
 using System.Diagnostics;
@@ -12,6 +13,11 @@ namespace ReadNoteWebApplication.Data.Repository
         {
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
+        }
+
+        public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
+        {
+            return await context.Users.FirstOrDefaultAsync(x => x.Username == username);
         }
     }
 }

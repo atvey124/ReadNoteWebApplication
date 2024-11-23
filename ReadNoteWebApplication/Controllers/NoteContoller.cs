@@ -18,9 +18,6 @@ namespace ReadNoteWebApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatAsync(string text,string title)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             await noteService.CreatAsync(text,title);;
             return NoContent();
         }
@@ -38,9 +35,6 @@ namespace ReadNoteWebApplication.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateAsync([FromRoute] int id,string newText,string newTitle)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             await noteService.UpdateAsync(id,newText,newTitle);
             return NoContent();
         }

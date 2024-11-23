@@ -3,6 +3,7 @@ using ReadNoteWebApplication.Data.Models;
 using ReadNoteWebApplication.Data.Validations;
 using ReadNoteWebApplication.Data.Exceptions;
 using System.Diagnostics;
+using ReadNoteWebApplication.Data.Hashing;
 
 
 namespace ReadNoteWebApplication.Data.Services
@@ -21,7 +22,7 @@ namespace ReadNoteWebApplication.Data.Services
                 User user = new User()
                 {
                     Username = username,
-                    Password = password,
+                    Password = HashSHA128.HashSha128(password),
                     Roles = roles,
                     Email = email
                 };
@@ -36,5 +37,33 @@ namespace ReadNoteWebApplication.Data.Services
 
 
         }
+
+        [StackTraceHidden]
+        public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
+        {
+            User? user = await userRepository.GetByUsernameAsync(username,cancellationToken);
+            if(user == null)
+                throw new UserException($"{username} was not found.");
+
+            return user;
+        }
+
+        //fix this
+        [StackTraceHidden]
+        public async Task<bool> SignInAsync(string username, string password, CancellationToken cancellationToken = default)
+        {
+            User? user = await GetByUsernameAsync(username);
+
+            if(user?.Password == HashSHA128.HashSha128(password))
+            {
+                return true;
+            }
+            else
+            {
+                throw new UserException($"password is not correct");
+            }
+
+        }
+
     }
 }
