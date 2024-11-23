@@ -6,7 +6,7 @@ namespace ReadNoteWebApplication.Controllers
 {
     [ApiController]
     [Route("Portfolio")]
-    public class PortfolioController(IPortfolioService portfolioService,IUserService userService) : ControllerBase
+    public class PortfolioController(IPortfolioService portfolioService,IUserService userService,INoteService noteService) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetUserPortfolioAsync(string username)
@@ -15,6 +15,16 @@ namespace ReadNoteWebApplication.Controllers
             List<Note> listNote = await portfolioService.GetPortfolioAsync(user);
 
             return Ok(listNote);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPortfolio(string username,int id)
+        {
+            User? user = await userService.GetByUsernameAsync(username);
+            Note? note = await noteService.GetByIdAsync(id);
+
+            await portfolioService.AddPortfolioAsync(user, note);
+            return NoContent();
         }
     }
 }

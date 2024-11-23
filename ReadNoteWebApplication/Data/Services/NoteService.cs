@@ -1,4 +1,5 @@
 ﻿using ReadNoteWebApplication.Data.Exceptions;
+using ReadNoteWebApplication.Data.Hashing;
 using ReadNoteWebApplication.Data.Helpers;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
@@ -17,13 +18,14 @@ namespace ReadNoteWebApplication.Data.Repository
             NoteValidation noteValidation = new NoteValidation();
             (bool, string) noteValidationCreat = noteValidation.CreatValidation(text,title);
 
+
             if (noteValidationCreat.Item1)
             {
                 Note note = new Note()
                 {
                     Text = text,
                     Title = title,
-                    Created = DateTime.UtcNow
+                    Created = DateTime.UtcNow,            
                 };
 
                 await noteRepository.CreatAsync(note, cancellationToken);
@@ -32,8 +34,6 @@ namespace ReadNoteWebApplication.Data.Repository
             {
                 throw new NoteException(noteValidationCreat.Item2);
             }
-
-
         }
 
 

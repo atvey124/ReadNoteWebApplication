@@ -7,6 +7,12 @@ namespace ReadNoteWebApplication.Data.Repository
 {
     public class PortfolioRepository(ApplicationDbContext context) : IPortfolioRepository
     {
+        public async Task AddPortfolioAsync(Portfolio portfolio, CancellationToken cancellationToken = default)
+        {
+            await context.Portfolios.AddAsync(portfolio);
+            await context.SaveChangesAsync();
+        }
+
         public async Task<List<Note>> GetPortfolioAsync(User? user, CancellationToken cancellationToken = default)
         {
             return await context.Portfolios.Where(u => u.UserId == user.Id).Select(note => new Note

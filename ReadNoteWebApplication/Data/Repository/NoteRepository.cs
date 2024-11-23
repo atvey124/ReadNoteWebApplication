@@ -48,5 +48,6 @@ namespace ReadNoteWebApplication.Data.Repository
         {
            return await context.Notes.Where(n => n.Title.Contains(title)).ToListAsync();
         }
+
     }
 }
