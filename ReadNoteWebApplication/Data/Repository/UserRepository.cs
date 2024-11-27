@@ -9,15 +9,16 @@ namespace ReadNoteWebApplication.Data.Repository
     public class UserRepository(ApplicationDbContext context) : IUserRepository
     {
         [StackTraceHidden]
-        public async Task CreatAsync(User user, CancellationToken cancellationToken = default)
+        public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
+            return await context.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
+        [StackTraceHidden]
+        public async Task RegisterAsync(User user, CancellationToken cancellationToken = default)
         {
-            return await context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            await context.Users.AddAsync(user,cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

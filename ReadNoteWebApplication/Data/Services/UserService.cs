@@ -1,68 +1,48 @@
-﻿using ReadNoteWebApplication.Data.Interfaces;
+﻿using ReadNoteWebApplication.Data.Hashing;
+using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
-using ReadNoteWebApplication.Data.Validations;
 using ReadNoteWebApplication.Data.Exceptions;
-using System.Diagnostics;
-using ReadNoteWebApplication.Data.Hashing;
-
 
 namespace ReadNoteWebApplication.Data.Services
 {
-    public class UserService(IUserRepository userRepository) : IUserService
+    internal class UserService(IPasswordHasher passwordHasher,IUserRepository userRepository,IJwtProvider jwtProvider) : IUserService
     {
-        [StackTraceHidden]
-        public async Task CreatAsync(string username, string email, string password,string roles = "User",CancellationToken cancellationToken = default)
+        public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            UserValidation userValidation = new UserValidation();
-            (bool, string) userValidationRegister = userValidation.RegisterValidation(email, password, username);
-
-
-            if (userValidationRegister.Item1)
-            {
-                User user = new User()
-                {
-                    Username = username,
-                    Password = HashSHA128.HashSha128(password),
-                    Roles = roles,
-                    Email = email
-                };
-
-                await userRepository.CreatAsync(user,cancellationToken);
-            }
-
-            else
-            {
-                throw new UserException(userValidationRegister.Item2);
-            }
-
-
-        }
-
-        [StackTraceHidden]
-        public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
-        {
-            User? user = await userRepository.GetByUsernameAsync(username,cancellationToken);
+            User? user = await userRepository.GetByEmailAsync(email, cancellationToken);
             if(user == null)
-                throw new UserException($"{username} was not found.");
-
+                throw new UserException("user not found");
+            
             return user;
         }
 
-        //fix this
-        [StackTraceHidden]
-        public async Task<bool> SignInAsync(string username, string password, CancellationToken cancellationToken = default)
+        public async Task LoginAsync(string email, string password,HttpContext context,CancellationToken cancellationToken = default)
         {
-            User? user = await GetByUsernameAsync(username);
+            User? user = await userRepository.GetByEmailAsync(email,cancellationToken);
+            if (user == null)
+                throw new UserException("user not found");
 
-            if (user?.Password == HashSHA128.HashSha128(password))
-            {
-                return true;
-            }
-            else
-            {
-                throw new UserException($"password is not correct");
-            }
+            bool result = passwordHasher.Verify(password, user.PasswordHash);
+            if (!result)
+                throw new UserException("Failed to login");         
+     
+            string token = jwtProvider.GenerateToken(user);
+            context.Response.Cookies.Append("test-cookie", token);
+
         }
 
+        public async Task RegisterAsync(string username,string passwordHash,string email,CancellationToken cancellationToken = default)
+        {
+            string hashedPassword = passwordHasher.Generate(passwordHash);
+
+            User user = new User
+            {
+                UserName = username,
+                Email = email,
+                PasswordHash = hashedPassword
+            };
+
+            await userRepository.RegisterAsync(user, cancellationToken);
+        }
     }
 }

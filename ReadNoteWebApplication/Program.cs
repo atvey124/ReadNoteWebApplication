@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using ReadNoteWebApplication.Data.Context;
 using ReadNoteWebApplication.Data.Extensions;
+using ReadNoteWebApplication.Data.Helpers;
 using System.Diagnostics;
 
 
@@ -23,6 +25,16 @@ namespace ReadNoteWebApplication
             app.MapControllers();
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+                HttpOnly = HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.Always
+            });
             app.Run();
             
         }

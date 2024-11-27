@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using ReadNoteWebApplication.Data.Helpers;
+using Microsoft.AspNetCore.Rewrite;
+using ReadNoteWebApplication.Data.Dtos.User;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
-using ReadNoteWebApplication.Data.Repository;
 using System.Diagnostics;
-using ReadNoteWebApplication.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.HttpLogging;
-
 
 namespace ReadNoteWebApplication.Controllers
 {
@@ -18,34 +13,30 @@ namespace ReadNoteWebApplication.Controllers
     [Route("User")]
     public class UserController(IUserService userService) : ControllerBase
     {
-        [StackTraceHidden]
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(string username,string email,string password)
+        public async Task<IActionResult> RegisterAsync([FromQuery] RegisterDto registerDto, CancellationToken cancellationToken = default)
         {
-            await userService.CreatAsync(username, email, password);
-            
+            await userService.RegisterAsync(registerDto.UserName, registerDto.PasswordHash, registerDto.Email,cancellationToken);
+
             return NoContent();
         }
 
-        //fix routing
-        [StackTraceHidden]
-        [HttpGet("username")]
-        public async Task<IActionResult> GetByUsernameAsync(string username)
+        [Authorize]
+        [HttpGet("GetByEmail")]
+        public async Task<IActionResult> GetByEmailAsync([FromQuery] GetByEmailDto emailDto, CancellationToken cancellationToken = default)
         {
-            User result = await userService.GetByUsernameAsync(username);
+            User result = await userService.GetByEmailAsync(emailDto.Email,cancellationToken);
 
             return Ok(result);
         }
 
-        [StackTraceHidden]
-        [HttpPost("SignIn")]
-        public async Task<IActionResult> SignInAsync(string username,string password)
+        //fix request
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync([FromQuery] LoginDto loginDto, CancellationToken cancellationToken = default)
         {
-            bool result = await userService.SignInAsync(username, password)!;
+            await userService.LoginAsync(loginDto.Email, loginDto.Password,this.HttpContext,cancellationToken);
 
-            return Ok(result);
+            return Ok();
         }
     }
-
-
 }

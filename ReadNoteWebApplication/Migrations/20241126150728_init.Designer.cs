@@ -11,8 +11,8 @@ using ReadNoteWebApplication.Data.Context;
 namespace ReadNoteWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241123143319_AddPortfoliosManyToMany")]
-    partial class AddPortfoliosManyToMany
+    [Migration("20241126150728_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,21 +54,6 @@ namespace ReadNoteWebApplication.Migrations
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("ReadNoteWebApplication.Data.Models.Portfolio", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NoteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "NoteId");
-
-                    b.HasIndex("NoteId");
-
-                    b.ToTable("Portfolios");
-                });
-
             modelBuilder.Entity("ReadNoteWebApplication.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -76,50 +61,20 @@ namespace ReadNoteWebApplication.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Roles")
+                    b.Property<string>("UserName")
+                        .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<string>("Username")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ReadNoteWebApplication.Data.Models.Portfolio", b =>
-                {
-                    b.HasOne("ReadNoteWebApplication.Data.Models.Note", "Note")
-                        .WithMany("Portfolios")
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadNoteWebApplication.Data.Models.User", "User")
-                        .WithMany("Portfolios")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Note");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ReadNoteWebApplication.Data.Models.Note", b =>
-                {
-                    b.Navigation("Portfolios");
-                });
-
-            modelBuilder.Entity("ReadNoteWebApplication.Data.Models.User", b =>
-                {
-                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }

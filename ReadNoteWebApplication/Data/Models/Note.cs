@@ -22,7 +22,6 @@ namespace ReadNoteWebApplication.Data.Models
 
         public DateTime Updated { get; set; } = DateTime.Now;
 
-        public List<Portfolio> Portfolios { get; set; } = new List<Portfolio>();
 
     }
 }

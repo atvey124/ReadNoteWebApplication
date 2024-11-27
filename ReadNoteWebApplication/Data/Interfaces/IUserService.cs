@@ -4,8 +4,11 @@ namespace ReadNoteWebApplication.Data.Interfaces
 {
     public interface IUserService
     {
-        Task CreatAsync(string username, string email,string password,string roles = "User",CancellationToken cancellationToken = default);
-        Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
-        Task<bool> SignInAsync(string username,string password,CancellationToken cancellationToken = default);
+        Task RegisterAsync(string username, string passwordHash, string email,CancellationToken cancellationToken = default);
+
+        Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+
+        Task LoginAsync(string email,string password,HttpContext context,CancellationToken cancellationToken = default);    
+
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ReadNoteWebApplication.Data.Dtos.Note;
 using ReadNoteWebApplication.Data.Helpers;
 using ReadNoteWebApplication.Data.Interfaces;
 using ReadNoteWebApplication.Data.Models;
@@ -12,78 +14,73 @@ namespace ReadNoteWebApplication.Controllers
     [ApiController]
     [Route("Note")]
     public class NoteContoller(INoteService noteService) : ControllerBase
-    {
-        //FIX ROUTING
-        [StackTraceHidden]
-        [HttpPost]
-        public async Task<IActionResult> CreatAsync(string text,string title)
+    {     
+        [Authorize]
+        [HttpPost("Creat")]
+        public async Task<IActionResult> CreatAsync([FromQuery] CreatDto creatDto, CancellationToken cancellationToken = default)
         {
-            await noteService.CreatAsync(text,title);;
+            await noteService.CreatAsync(creatDto.Text,creatDto.Title,cancellationToken);
             return NoContent();
         }
 
-        [StackTraceHidden]
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        [Authorize]
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdDto getById, CancellationToken cancellationToken = default)
         {
-            Note result = await noteService.GetByIdAsync(id);
+            Note result = await noteService.GetByIdAsync(getById.Id,cancellationToken);
 
             return Ok(result);
         }
 
-        [StackTraceHidden]
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] int id,string newText,string newTitle)
+        [Authorize]
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateAsync([FromQuery] UpdateDto updateDto, CancellationToken cancellationToken = default)
         {
-            await noteService.UpdateAsync(id,newText,newTitle);
+            await noteService.UpdateAsync(updateDto.Id,updateDto.newText,updateDto.newTitle,cancellationToken);
             return NoContent();
         }
 
-        [StackTraceHidden]
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+        [Authorize]
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteAsync([FromQuery] DeleteDto deleteDto, CancellationToken cancellationToken = default)
         {
-            await noteService.DeleteAsync(id);
+            await noteService.DeleteAsync(deleteDto.Id,cancellationToken);
 
             return NoContent();
         }
 
-        //FIX ROUTING
-        [StackTraceHidden]
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        [Authorize]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            List<Note> listNote = await noteService.GetAllAsync();
+            List<Note> listNote = await noteService.GetAllAsync(cancellationToken);
 
             return Ok(listNote);
         }
 
-        //FIX ROUTING
-        [StackTraceHidden]
-        [HttpGet("{title}")]
-        public async Task<IActionResult> GetAllByTitleAsync(string title)
+        [Authorize]
+        [HttpGet("GetByTitle")]
+        public async Task<IActionResult> GetAllByTitleAsync([FromQuery] GetByTitleDto getByTitle, CancellationToken cancellationToken = default)
         {
-            List<Note> listNote = await noteService.GetAllByTitleAsync(title);
+            List<Note> listNote = await noteService.GetAllByTitleAsync(getByTitle.Title,cancellationToken);
 
             return Ok(listNote);
         }
 
-        //FIX ROUTING
-        [StackTraceHidden]
-        [HttpPut]
-        public async Task<IActionResult> PutLikeNoteByIdAsync(int id, CancellationToken cancellationToken = default)
+        [Authorize]
+        [HttpPut("putLike")]
+        public async Task<IActionResult> PutLikeNoteByIdAsync([FromQuery] PutLIkeDto putLike, CancellationToken cancellationToken = default)
         {
-            await noteService.PutLikeNoteByIdAsync(id, cancellationToken);
+            await noteService.PutLikeNoteByIdAsync(putLike.Id, cancellationToken);
 
             return NoContent();
         }
 
-        //FIX ROUTING
-        [StackTraceHidden]
-        [HttpPut("/")]
-        public async Task<IActionResult> PutDislikeNoteByIdAsync(int id, CancellationToken cancellationToken = default)
+        [Authorize]
+        [HttpPut("putDislike")]
+        public async Task<IActionResult> PutDislikeNoteByIdAsync([FromQuery] PutDislike putDislike, CancellationToken cancellationToken = default)
         {
-            await noteService.PutDislikeNoteByIdAsync(id, cancellationToken);
+            await noteService.PutDislikeNoteByIdAsync(putDislike.Id, cancellationToken);
 
             return NoContent();
         }

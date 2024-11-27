@@ -7,16 +7,14 @@ namespace ReadNoteWebApplication.Data.Models
     [Table("Users")]
     public class User
     {
-        public int Id { get; set; }
+        public int Id {  get; set; }
 
-        public string? Username { get; set; }
+        public string UserName {  get; set; }
 
-        public string? Email { get; set; }
+        public string PasswordHash { get; set; }
 
-        public string? Password { get; set; }
+        public string Email {  get; set; }
 
-        public string? Roles { get; set; }  
 
-        public List<Portfolio> Portfolios { get; set; } = new List<Portfolio>();
     }
 }
